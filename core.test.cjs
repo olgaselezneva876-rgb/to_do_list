@@ -60,3 +60,18 @@ test('storage round trip preserves tasks and rejects corrupt data', () => {
   assert.equal(api.decode(null).length, 0);
   for (const raw of ['invalid', '{}', '{"version":2,"tasks":[]}', JSON.stringify({version: 1, tasks: [{...task, done: 'yes'}]}), JSON.stringify({version: 1, tasks: [task, task]})]) assert.throws(() => api.decode(raw));
 });
+
+test('progress reaches 100 percent only when every task is complete', () => {
+  const date = '2026-10-15';
+  const tasks = Array.from({ length: 200 }, (_, index) => ({
+    id: String(index), title: `Task ${index}`, date, priority: 'secondary', done: index < 199,
+  }));
+  const incomplete = api.progress(tasks, date);
+  assert.equal(incomplete.total, 200);
+  assert.equal(incomplete.done, 199);
+  assert.equal(incomplete.percent, 99);
+  tasks[199].done = true;
+  assert.equal(api.progress(tasks, date).percent, 100);
+  assert.equal(api.progress([], date).percent, 0);
+  assert.equal(api.progress(tasks.slice(0, 3).map((task, index) => ({ ...task, done: index < 2 })), date).percent, 67);
+});

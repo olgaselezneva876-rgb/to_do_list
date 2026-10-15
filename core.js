@@ -37,7 +37,10 @@
   function progress(tasks, date) {
     const day = tasks.filter(task => task.date === date);
     const done = day.filter(task => task.done).length;
-    return { total: day.length, done, percent: day.length ? Math.round(done / day.length * 100) : 0 };
+    const percent = day.length
+      ? (done === day.length ? 100 : Math.min(99, Math.round(done / day.length * 100)))
+      : 0;
+    return { total: day.length, done, percent };
   }
   function decode(raw) {
     if (raw === null) return [];
