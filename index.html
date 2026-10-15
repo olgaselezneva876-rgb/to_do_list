@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f2">
+  <title>День за днём — планировщик</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%232d6852'/%3E%3Cpath d='m11 21 6 6 13-15' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="core.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">✓</span> день за днём<span class="brand-dot">.</span></a>
+      <span class="local-note"><span aria-hidden="true">◉</span> Твоё пространство для дел</span>
+    </header>
+    <main>
+      <section class="intro">
+        <p class="eyebrow">МЕНЬШЕ СУЕТЫ · БОЛЬШЕ ЯСНОСТИ</p>
+        <h1>Всё начинается<br>с одного дела<span>.</span></h1>
+        <p class="intro-copy">Выбери главное. Двигайся в своём темпе.</p>
+      </section>
+      <div id="storage-error" class="notice error" role="alert" hidden></div>
+      <section class="datebar" aria-label="Выбор дня">
+        <div><p class="eyebrow" id="date-context">ТВОЙ ДЕНЬ</p><h2 id="date-heading"></h2></div>
+        <div class="date-controls">
+          <button id="previous" class="icon-button" aria-label="Предыдущий день">‹</button>
+          <label class="sr-only" for="selected-date">Выбрать дату</label>
+          <input id="selected-date" type="date" min="1000-01-07" max="9999-12-31" required>
+          <button id="next" class="icon-button" aria-label="Следующий день">›</button>
+          <button id="today" class="quiet-button">Сегодня</button>
+        </div>
+      </section>
+      <div class="workspace">
+        <section class="card tasks-card" aria-labelledby="tasks-heading">
+          <div class="section-heading"><h2 id="tasks-heading">Планы на день <span id="task-count" class="count">0</span></h2><span class="subtle">Шаг за шагом</span></div>
+          <form id="add-form" class="add-form">
+            <label class="sr-only" for="task-title">Новая задача</label>
+            <input id="task-title" placeholder="Что хочется сделать?" maxlength="300" required autocomplete="off">
+            <div class="add-bottom">
+              <label class="sr-only" for="task-priority">Приоритет новой задачи</label>
+              <select id="task-priority"><option value="urgent">Срочно</option><option value="secondary" selected>Второстепенно</option><option value="later">Можно сделать потом</option></select>
+              <button class="primary-button" type="submit"><span aria-hidden="true">＋</span> Добавить</button>
+            </div>
+          </form>
+          <p id="form-error" class="inline-error" role="alert" hidden></p>
+          <ul id="task-list" class="task-list" aria-label="Задачи выбранного дня"></ul>
+          <div id="empty-state" class="empty-state"><span class="empty-icon" aria-hidden="true">✦</span><h3>День открыт для планов</h3><p>Добавь первое дело — большое или маленькое.</p></div>
+          <div class="tasks-footer"><span id="remaining">Пока можно просто выдохнуть</span><span id="save-status" role="status">Сохранение в браузере</span></div>
+        </section>
+        <aside class="card progress-card" aria-labelledby="progress-heading">
+          <p class="eyebrow">КАЖДЫЙ ШАГ СЧИТАЕТСЯ</p><h2 id="progress-heading">Твой прогресс</h2>
+          <div id="day-ring" class="ring large-ring" role="img" aria-label="Нет задач"><div class="ring-center"><strong id="day-percent">0<span>%</span></strong><span>на сегодня</span></div></div>
+          <p id="day-summary" class="day-summary" aria-live="polite">Нет задач</p>
+          <p id="encouragement" class="encouragement">Освободи мысли — запиши планы.</p>
+          <div class="priority-legend"><span><i class="dot urgent"></i>Срочно</span><span><i class="dot secondary"></i>Второстепенно</span><span><i class="dot later"></i>Можно сделать потом</span></div>
+        </aside>
+      </div>
+      <section class="card week-card" aria-labelledby="week-heading">
+        <div class="section-heading"><div><p class="eyebrow">ПОСМОТРИ, СКОЛЬКО УЖЕ ПОЗАДИ</p><h2 id="week-heading">Неделя маленьких побед</h2></div><span id="week-range" class="subtle"></span></div>
+        <div id="week-days" class="week-days"></div>
+        <p class="week-hint">Последние 7 дней до выбранной даты · Нажми на день, чтобы открыть его дела</p>
+      </section>
+    </main>
+    <footer class="page-footer"><span>Не обязательно всё. Достаточно важного.</span><span>Сделано для твоего ритма ✦</span></footer>
+  </div>
+  <dialog id="edit-dialog" aria-labelledby="edit-heading">
+    <form id="edit-form"><p class="eyebrow">ЧУТЬ БОЛЬШЕ ЯСНОСТИ</p><h2 id="edit-heading">Изменить задачу</h2>
+      <label for="edit-title">Название</label><input id="edit-title" maxlength="300" required>
+      <label for="edit-priority">Приоритет</label><select id="edit-priority"><option value="urgent">Срочно</option><option value="secondary">Второстепенно</option><option value="later">Можно сделать потом</option></select>
+      <p id="edit-error" class="inline-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button id="cancel-edit" class="quiet-button" type="button">Отмена</button><button class="primary-button">Сохранить</button></div>
+    </form>
+  </dialog>
+  <noscript>Для работы планировщика включи JavaScript в браузере.</noscript>
+</body>
+</html>

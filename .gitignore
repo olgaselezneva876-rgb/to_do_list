@@ -1,0 +1,42 @@
+# Browser profiles and generated test artifacts
+.browser-test-profile/
+.browser-test-profile*/
+playwright-report/
+test-results/
+preview-desktop.png
+preview-mobile.png
+
+# Temporary files, logs, caches and editor settings
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.swo
+*~
+.tmp/
+tmp/
+temp/
+.cache/
+coverage/
+node_modules/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local environment and secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+credentials.json
+credentials*.json
+secrets.json
+secrets*.json
+secrets/
+.ssh/
